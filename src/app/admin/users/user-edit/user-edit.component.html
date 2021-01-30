@@ -2,23 +2,25 @@
 <h1>{{ user.id == null ? 'Add' : 'Edit' }} User</h1>
 <div class="bg-warning p-5" *ngIf="message">{{ message }}</div>
 
-<form action="some-url-goes-here" method="post">
+<form>
 
   <div class="form-group">
     <label for="name">Name</label>
-    <input type="text" class="form-control" id="name" placeholder="user name">
+    <!-- Square and Round Brackets signify two-way binding, meaning it can read the value we provide and
+     write the value to the backend. Every input that uses ngModel must have a name for the html tag as well-->
+    <input type="text" class="form-control" id="name" placeholder="user name" [(ngModel)]="formUser.name" name="name">
     <div class="alert alert-danger">error message placeholder</div>
 
   </div>
 
   <div class="form-group" *ngIf="user.id == null"> <!-- only show this field on adding a user -->
     <label for="password">Password</label>
-    <input type="password" class="form-control" id="password" placeholder="password">
-    <div class="alert alert-danger">error message placeholder</div>
+    <input type="password" class="form-control" id="password" placeholder="password" name="password" [(ngModel)]="password">
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
 
   </div>
 
-  <button type="submit" class="btn btn-primary">Save</button>
+  <button type="submit" class="btn btn-primary" (click)="onSubmit()">Save</button>
 </form>
 
 
