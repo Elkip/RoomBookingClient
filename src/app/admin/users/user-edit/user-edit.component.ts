@@ -15,8 +15,11 @@ export class UserEditComponent implements OnInit {
 
   formUser: User;
   password: string;
+  password2: string;
   message: string;
-  error: string;
+  nameIsValid = false;
+  passwordIsValid = false;
+  passwordsMatch = false;
 
   constructor(private dataService: DataService, private router: Router) { }
 
@@ -37,6 +40,30 @@ export class UserEditComponent implements OnInit {
       );
     }
 
+  }
+
+  checkNameIsValid(): void {
+    if (this.formUser.name) {
+      this.nameIsValid = (this.formUser.name.trim().length > 0);
+    } else {
+      this.nameIsValid = false;
+    }
+  }
+
+  checkPasswordIsValid(): void {
+    if (this.password) {
+      this.passwordIsValid = (this.password.trim().length > 0);
+    }  else {
+      this.passwordIsValid = false;
+    }
+  }
+
+  checkPasswordsMatch(): void {
+    if (this.password2 && this.passwordIsValid) {
+      this.passwordsMatch = this.password === this.password2;
+    } else {
+      this.passwordsMatch = false;
+    }
   }
 
 }
