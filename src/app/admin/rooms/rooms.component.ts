@@ -12,6 +12,7 @@ export class RoomsComponent implements OnInit {
 
   rooms: Array<Room>;
   selectedRoom: Room;
+  action: String;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) { }
 
@@ -20,14 +21,23 @@ export class RoomsComponent implements OnInit {
     // inspect the URL to see if there is a parameter on the path
     this.route.queryParams.subscribe((params) => {
       const id = params['id'];
+      this.action = params['action'];
       if (id) {
         // cast a variable to a number with '+'
         this.selectedRoom = this.rooms.find( room => room.id === +id);
+      }
+      if (params['action'] === 'add') {
+        this.selectedRoom = new Room();
+        this.action = 'edit';
       }
     });
   }
 
   setRoom(id: number): void {
-    this.router.navigate(['admin', 'rooms'],{ queryParams : { id : id } });
+    this.router.navigate(['admin', 'rooms'],{ queryParams : { id : id, action : 'view' } });
+  }
+
+  addRoom() {
+    this.router.navigate(['admin', 'rooms'], { queryParams : { action : 'add'}});
   }
 }
