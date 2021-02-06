@@ -1,14 +1,16 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {User} from "../../../model/Users";
 import {DataService} from "../../../data.service";
 import {Router} from "@angular/router";
+import {FormResetService} from "../../../form-reset.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-user-edit',
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.css']
 })
-export class UserEditComponent implements OnInit {
+export class UserEditComponent implements OnInit, OnDestroy {
 
   @Input()
   user: User;
@@ -20,18 +22,36 @@ export class UserEditComponent implements OnInit {
   nameIsValid = false;
   passwordIsValid = false;
   passwordsMatch = false;
+  userResetSubscription: Subscription;
 
-  constructor(private dataService: DataService, private router: Router) { }
+  constructor(private dataService: DataService,
+              private router: Router,
+              private formResetService: FormResetService) { }
 
   ngOnInit(): void {
+   this.initializeForm();
+    this.userResetSubscription = this.formResetService.resetUserFormEvent.subscribe( user => {
+      this.user = user;
+      this.initializeForm();
+    });
+  }
+
+  ngOnDestroy() {
+    this.userResetSubscription.unsubscribe();
+  }
+
+  initializeForm(): void {
     this.formUser = Object.assign({}, this.user);
+    this.checkNameIsValid();
+    this.checkPasswordIsValid();
   }
 
   onSubmit() {
     if (this.formUser.id == null) {
       this.dataService.addUser(this.formUser, this.password).subscribe((user) => {
         this.router.navigate(["admin", "users"], { queryParams : { action : 'view', id : user.id }});
-      })
+      });
+
     } else {
       this.dataService.updateUser(this.formUser).subscribe(
         (user) => {
