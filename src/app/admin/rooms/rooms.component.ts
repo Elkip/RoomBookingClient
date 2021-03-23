@@ -24,6 +24,7 @@ export class RoomsComponent implements OnInit {
     this.dataService.getRooms().subscribe(next => this.rooms = next );
     // inspect the URL to see if there is a parameter on the path
     this.route.queryParams.subscribe((params) => {
+      this.action = null;
       const id = params['id'];
       this.action = params['action'];
       if (id) {
