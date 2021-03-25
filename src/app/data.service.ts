@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Layout, LayoutCapacity, Room} from "./model/Room";
 import {User} from "./model/Users";
 import {Observable, of} from "rxjs";
+import {Booking} from "./model/Booking";
+import {formatDate} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +12,7 @@ export class DataService {
 
   private rooms: Array<Room>;
   private users: Array<User>;
+  private bookings: Array<Booking>;
 
   getRooms(): Observable<Array<Room>> {
     return of(this.rooms);
@@ -17,6 +20,10 @@ export class DataService {
 
   getUsers(): Observable<Array<User>> {
     return of(this.users);
+  }
+
+  getBookings(): Observable<Array<Booking>> {
+    return of(this.bookings);
   }
 
   updateUser(user: User) : Observable<User> {
@@ -74,6 +81,12 @@ export class DataService {
     return of(null);
   }
 
+  deleteBooking(id: number): Observable<any> {
+    const booking = this.bookings.find(r => r.id === id);
+    this.bookings.splice(this.bookings.indexOf(booking), 1);
+    return of(null);
+  }
+
   constructor() {
     this.rooms = new Array<Room>();
     const room1 = new Room();
@@ -114,5 +127,32 @@ export class DataService {
     user2.id = 2;
     user2.name = 'Drew Carry';
     this.users.push(user2);
+
+    this.bookings = new Array<Booking>();
+    const booking1 = new Booking();
+    booking1.id = 1;
+    booking1.room = room1;
+    booking1.user = user1;
+    booking1.layout = Layout.THEATER;
+    booking1.title = "Example meeting";
+    booking1.date = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
+    booking1.startTime = '11:30';
+    booking1.endTime = '12:30';
+    booking1.participants = 12;
+
+    const booking2 = new Booking();
+    booking2.id = 2;
+    booking2.room = room2;
+    booking2.user = user2;
+    booking2.layout = Layout.USHAPE;
+    booking2.title = "Lone Ranger Support Group";
+    booking2.date = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
+    booking2.startTime = '12:59';
+    booking2.endTime = '1:00';
+    booking2.participants = 1;
+
+    this.bookings.push(booking1);
+    this.bookings.push(booking2);
   }
+
 }
