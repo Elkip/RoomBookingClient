@@ -29,7 +29,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
               private formResetService: FormResetService) { }
 
   ngOnInit(): void {
-   this.initializeForm();
+    this.initializeForm();
     this.userResetSubscription = this.formResetService.resetUserFormEvent.subscribe( user => {
       this.user = user;
       this.initializeForm();

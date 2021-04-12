@@ -20,6 +20,7 @@ const routes: Routes = [
   { path : 'admin/rooms', component : RoomsComponent },
   { path : '', component : CalendarComponent },
   { path : 'editBooking', component: CalendarEditComponent},
+  { path : 'addBooking', component: CalendarEditComponent},
   { path : '404', component : PageNotFoundComponent },
   { path : "**", redirectTo : '/404' }
 ];
