@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {formatDate} from "@angular/common";
 import {Booking} from "../model/Booking";
 import {DataService} from "../data.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-calendar',
@@ -12,12 +12,22 @@ import {Router} from "@angular/router";
 export class CalendarComponent implements OnInit {
 
   bookings: Array<Booking>;
+  selectedDate: string;
 
   constructor(private dataService: DataService,
-              private router: Router) { }
+              private router: Router,
+              private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.dataService.getBookings().subscribe( next => this.bookings = next );
+    this.route.queryParams.subscribe( params => {
+      this.selectedDate = params['date'];
+      if (!this.selectedDate) {
+        this.selectedDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
+      }
+      this.dataService.getBookings(this.selectedDate).subscribe( next => this.bookings = next );
+    });
+
+
   }
 
   editBooking(id: number): void {
@@ -30,6 +40,10 @@ export class CalendarComponent implements OnInit {
 
   deleteBooking(id: number): void {
     this.dataService.deleteBooking(id).subscribe()
+  }
+
+  dateChanged(): void {
+    this.router.navigate([''], {queryParams: {date : this.selectedDate}});
   }
 
 }
