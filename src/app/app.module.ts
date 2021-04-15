@@ -6,14 +6,15 @@ import { MenuComponent } from './menu/menu.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { RoomsComponent } from './admin/rooms/rooms.component';
 import { UsersComponent } from './admin/users/users.component';
-import {RouterModule, Routes} from "@angular/router";
+import { RouterModule, Routes} from "@angular/router";
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { RoomDetailComponent } from './admin/rooms/room-detail/room-detail.component';
 import { UserDetailComponent } from './admin/users/user-detail/user-detail.component';
 import { UserEditComponent } from './admin/users/user-edit/user-edit.component';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { RoomEditComponent } from './admin/rooms/room-edit/room-edit.component';
 import { CalendarEditComponent } from './calendar/calendar-edit/calendar-edit.component';
+import { HttpClientModule } from "@angular/common/http";
 
 const routes: Routes = [
   { path : 'admin/users', component : UsersComponent },
@@ -43,6 +44,7 @@ const routes: Routes = [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     RouterModule.forRoot(routes)
   ],
   providers: [],

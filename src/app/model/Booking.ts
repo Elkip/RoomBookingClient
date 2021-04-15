@@ -1,4 +1,4 @@
-import {User} from "./Users";
+import {User} from "./User";
 import {Layout, Room} from "./Room";
 
 export class Booking {

@@ -3,7 +3,7 @@ import {Booking} from "../../model/Booking";
 import {DataService} from "../../data.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Layout, Room} from "../../model/Room";
-import {User} from "../../model/Users";
+import {User} from "../../model/User";
 
 @Component({
   selector: 'app-calendar-edit',

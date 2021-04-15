@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Layout, LayoutCapacity, Room} from "./model/Room";
-import {User} from "./model/Users";
+import {User} from "./model/User";
 import {Observable, of} from "rxjs";
 import {Booking} from "./model/Booking";
 import {formatDate} from "@angular/common";
