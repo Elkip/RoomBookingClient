@@ -1,34 +1,36 @@
-<!--<h1><span *ngIf="user.id == null">Add</span><span *ngIf="user.id != null">Edit</span> User</h1>-->
-<h1>{{ user.id == null ? 'Add' : 'Edit' }} User</h1>
-<div class="bg-warning p-5" *ngIf="message">{{ message }}</div>
+<h1>{{user.id == null ? 'Add' : 'Edit'}} User</h1>
 
-<form #userForm="ngForm">
+<div class="bg-warning p-5" *ngIf="message">{{message}}</div>
+
+<form #userForm="ngForm" >
 
   <div class="form-group">
     <label for="name">Name</label>
-    <!-- Square and Round Brackets signify two-way binding, meaning it can read the value we provide and
-     write the value to the backend. Every input that uses ngModel must have a name for the html tag as well-->
     <input type="text" class="form-control" id="name" placeholder="user name" [(ngModel)]="formUser.name" name="name"
-           (change)="checkNameIsValid()" required #nameField="ngModel">
-    <div *ngIf="nameField.invalid && nameField.touched" class="alert alert-danger">Name is Required</div>
-    <div *ngIf="!nameIsValid && nameField.touched" class="alert alert-danger">Name is Invalid</div>
+           (change)="checkNameIsValid()" required #nameField="ngModel" >
+    <div *ngIf="nameField.invalid && nameField.touched" class="alert alert-danger">Name is required</div>
+    <div *ngIf="!nameIsValid && nameField.touched" class="alert alert-danger">Name cannot be blank</div>
 
   </div>
 
-  <div class="form-group" [hidden]="user.id != null"> <!-- only show this field on adding a user -->
+  <div class="form-group" *ngIf="user.id == null"  > <!-- only show this field on adding a user -->
     <label for="password">Password</label>
-    <input type="password" class="form-control" id="password" placeholder="password" name="password" required
-           [(ngModel)]="password" #passwordField="ngModel" (change)="checkPasswordIsValid()">
-    <div class="alert alert-danger" [hidden]="passwordIsValid || passwordField.untouched">Password is Invalid</div>
+    <input type="password" class="form-control" id="password" placeholder="password" name="password" [(ngModel)]="password"
+           (change)="checkPasswordIsValid()" required #pass1="ngModel">
+    <div class="alert alert-danger" [hidden]="pass1.valid || pass1.untouched" >Passwords is required</div>
+    <div class="alert alert-danger" [hidden]="passwordIsValid || pass1.untouched">Passwords cannot be blank</div>
 
-    <label for="password2">Confirm Password</label>
-    <input type="password" class="form-control" id="password2" placeholder="password" name="password2" required
-           [(ngModel)]="password2" #passwordField2="ngModel" (change)="checkPasswordsMatch()">
-    <div class="alert alert-danger" [hidden]="passwordsMatch || passwordField2.untouched">Passwords do not Match</div>
+    <label for="password2">Repeat Password</label>
+    <input type="password" class="form-control" id="password2" placeholder="password" name="password2" [(ngModel)]="password2"
+           (change)="checkPasswordIsValid()" required #pass2="ngModel">
+    <div class="alert alert-danger" [hidden]="passwordsMatch">The passwords must match</div>
   </div>
-
   <button type="submit" class="btn btn-primary" (click)="onSubmit()" [disabled]="userForm.invalid || !nameIsValid ||
    !passwordIsValid || !passwordsMatch">Save</button>
+  <div *ngIf="userForm.invalid">Form is invalid</div>
+  <div *ngIf="!nameIsValid">Name is not valid</div>
+  <div *ngIf="!passwordIsValid">Password is not valid</div>
+  <div *ngIf="!passwordsMatch">Passwords do not match</div>
 </form>
 
 

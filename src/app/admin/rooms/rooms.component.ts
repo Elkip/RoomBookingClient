@@ -14,6 +14,9 @@ export class RoomsComponent implements OnInit {
   rooms: Array<Room>;
   selectedRoom: Room;
   action: String;
+  loadingData = true;
+  message = 'Please wait... getting the list of rooms'
+  reloadAttempts = 0;
 
   constructor(private dataService: DataService,
               private route: ActivatedRoute,
@@ -21,7 +24,32 @@ export class RoomsComponent implements OnInit {
               private formResetService: FormResetService) { }
 
   ngOnInit(): void {
-    this.dataService.getRooms().subscribe(next => this.rooms = next );
+    this.loadData()
+  }
+
+  loadData() {
+    this.dataService.getRooms().subscribe(next => {
+        this.rooms = next;
+        this.loadingData = false;
+        this.processUrlParams();
+      },
+      (error) => {
+        console.log('error', error);
+        if (error.status === 402) {
+          this.message = 'Sorry - payment is required to use this application.'
+        } else {
+          this.reloadAttempts++;
+          if (this.reloadAttempts <= 10) {
+            this.message = 'Sorry, something went wrong. Trying again...';
+            this.loadData()
+          } else {
+            this.message = 'Sorry, something went wrong. Please contact support.'
+          }
+        }
+      });
+  }
+
+  processUrlParams() {
     // inspect the URL to see if there is a parameter on the path
     this.route.queryParams.subscribe((params) => {
       this.action = null;
@@ -39,7 +67,7 @@ export class RoomsComponent implements OnInit {
     });
   }
 
-  setRoom(id: number): void {
+  setRoom(id: number) {
     this.router.navigate(['admin', 'rooms'],{ queryParams : { id : id, action : 'view' } });
   }
 

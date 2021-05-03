@@ -14,6 +14,8 @@ export class UsersComponent implements OnInit {
   users: Array<User>;
   selectedUser: User;
   action: string;
+  loadingData = true;
+  message = 'Please wait... Getting list of users';
 
   constructor(private dataService: DataService,
               private route: ActivatedRoute,
@@ -21,17 +23,18 @@ export class UsersComponent implements OnInit {
               private formResetService: FormResetService) { }
 
   ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData(): void {
     this.dataService.getUsers().subscribe(next => {
       this.users = next;
-    });
-
-    this.route.queryParams.subscribe((params) => {
-      const id = params['id'];
-      this.action  = params['action'];
-      if (id) {
-        this.selectedUser = this.users.find( user => user.id === +id );
-      }
-    });
+      this.loadingData = false;
+      this.processUrlParams();
+    },
+      error => {
+        this.message = 'Sorry, something went wrong.'
+      });
   }
 
   setUser(id: number): void {
@@ -44,4 +47,13 @@ export class UsersComponent implements OnInit {
     this.formResetService.resetUserFormEvent.emit(this.selectedUser);
   }
 
+  processUrlParams() {
+    this.route.queryParams.subscribe((params) => {
+      const id = params['id'];
+      this.action  = params['action'];
+      if (id) {
+        this.selectedUser = this.users.find( user => user.id === +id );
+      }
+    });
+  }
 }

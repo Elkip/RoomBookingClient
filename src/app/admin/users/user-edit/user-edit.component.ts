@@ -70,13 +70,20 @@ export class UserEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkPasswordIsValid(): void {
-    if (this.password) {
-      this.passwordIsValid = (this.password.trim().length > 0);
-    }  else {
-      this.passwordIsValid = false;
+  checkPasswordIsValid() {
+    if (this.formUser.id != null) {
+      this.passwordIsValid = true;
+      this.passwordsMatch = true;
+    } else {
+      this.passwordsMatch = this.password === this.password2;
+      if (this.password) {
+        this.passwordIsValid = this.password.trim().length > 0;
+      } else {
+        this.passwordIsValid = false;
+      }
     }
   }
+
 
   checkPasswordsMatch(): void {
     if (this.password2 && this.passwordIsValid) {
