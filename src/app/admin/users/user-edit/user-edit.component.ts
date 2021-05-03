@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, Output, EventEmitter} from '@angular/core';
 import {User} from "../../../model/User";
 import {DataService} from "../../../data.service";
 import {Router} from "@angular/router";
@@ -14,6 +14,8 @@ export class UserEditComponent implements OnInit, OnDestroy {
 
   @Input()
   user: User;
+  @Output()
+  dataChangedEvent = new EventEmitter();
 
   formUser: User;
   password: string;
@@ -47,15 +49,20 @@ export class UserEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    this.message = 'Saving...'
     if (this.formUser.id == null) {
       this.dataService.addUser(this.formUser, this.password).subscribe((user) => {
+        this.dataChangedEvent.emit();
         this.router.navigate(["admin", "users"], { queryParams : { action : 'view', id : user.id }});
       });
 
     } else {
       this.dataService.updateUser(this.formUser).subscribe(
         (user) => {
+          this.dataChangedEvent.emit();
           this.router.navigate(["admin", "users"], { queryParams : { action : 'view', id : user.id }});
+        }, (error) => {
+          this.message = 'Something went wrong and the data wasn\'t loaded. Perhaps try again.'
         }
       );
     }
