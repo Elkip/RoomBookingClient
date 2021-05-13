@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Layout, LayoutCapacity, Room} from "../../../model/Room";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {DataService} from "../../../data.service";
@@ -15,12 +15,16 @@ export class RoomEditComponent implements OnInit, OnDestroy {
 
   @Input()
   room: Room;
+  @Output()
+  dataChangedEvent = new EventEmitter();
 
   layouts = Object.keys(Layout);
   layoutEnum = Layout;
 
   roomForm: FormGroup;
   resetEventSubscription: Subscription;
+
+  message: string;
 
   constructor(private formBuilder: FormBuilder,
               private dataService: DataService,
@@ -54,6 +58,7 @@ export class RoomEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    this.message = 'Saving...'
     this.room.name = this.roomForm.controls['roomName'].value;
     this.room.location = this.roomForm.value['location'];
     this.room.capacities = new Array<LayoutCapacity>();
@@ -68,12 +73,17 @@ export class RoomEditComponent implements OnInit, OnDestroy {
     console.log(this.room);
     if (this.room.id == null) {
       this.dataService.addRoom(this.room).subscribe(next => {
-          this.router.navigate(['admin', 'rooms'], { queryParams : { action : 'view', id : next.id }});
-        }
-      );
+        this.dataChangedEvent.emit();
+        this.router.navigate(['admin', 'rooms'], { queryParams : { action : 'view', id : next.id }});
+      }, (error) => {
+        this.message = 'Something went wrong and the data wasn\'t loaded. Perhaps try again.'
+      });
     } else {
       this.dataService.updateRoom(this.room).subscribe( next => {
+        this.dataChangedEvent.emit();
         this.router.navigate(['admin', 'rooms'], { queryParams : { action : 'view', id : next.id }});
+      }, (error) => {
+        this.message = 'Something went wrong and the data wasn\'t loaded. Perhaps try again.'
       });
     }
   }

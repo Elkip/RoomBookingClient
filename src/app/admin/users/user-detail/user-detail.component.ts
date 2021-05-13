@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {User} from "../../../model/User";
 import {Router} from "@angular/router";
 import {DataService} from "../../../data.service";
@@ -13,6 +13,11 @@ export class UserDetailComponent implements OnInit {
   @Input()
   user:  User;
 
+  @Output()
+  dataChangedEvent = new EventEmitter();
+
+  message: string;
+
   constructor(private dataService: DataService, private router: Router) { }
 
   ngOnInit(): void {
@@ -23,14 +28,25 @@ export class UserDetailComponent implements OnInit {
   }
 
   deleteUser(): void {
+    this.message = 'deleting...';
     this.dataService.deleteUser(this.user.id).subscribe(
       next => {
+        this.dataChangedEvent.emit();
         this.router.navigate(['admin', 'users']);
+      }, error => {
+        this.message = 'User cannot be deleted.';
       }
     );
   }
 
   resetPassword(): void {
-    this.dataService.resetPassword(this.user.id).subscribe()
+    this.message = 'Please wait...';
+    this.dataService.resetPassword(this.user.id).subscribe(
+      next => {
+        this.message = 'The password has been reset.';
+      }, error => {
+        this.message = 'Sorry something went wrong.';
+      }
+    );
   }
 }

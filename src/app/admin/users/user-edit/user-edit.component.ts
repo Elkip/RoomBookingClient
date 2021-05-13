@@ -49,11 +49,13 @@ export class UserEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    this.message = 'Saving...'
+    this.message = 'Saving...';
     if (this.formUser.id == null) {
       this.dataService.addUser(this.formUser, this.password).subscribe((user) => {
         this.dataChangedEvent.emit();
         this.router.navigate(["admin", "users"], { queryParams : { action : 'view', id : user.id }});
+      }, (error) => {
+        this.message = 'Something went wrong and the data wasn\'t loaded. Perhaps try again.'
       });
 
     } else {
