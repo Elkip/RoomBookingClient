@@ -4,7 +4,6 @@ import {DataService} from "../../data.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Layout, Room} from "../../model/Room";
 import {User} from "../../model/User";
-import {EditBookingDataService} from "../../edit-booking-data.service";
 import {map} from "rxjs/operators";
 
 @Component({
@@ -24,12 +23,12 @@ export class CalendarEditComponent implements OnInit {
 
   constructor(private dataService: DataService,
               private route: ActivatedRoute,
-              private router: Router,
-              private editBookingDataService: EditBookingDataService) { }
+              private router: Router) { }
 
   ngOnInit(): void {
-    this.rooms = this.editBookingDataService.rooms;
-    this.users = this.editBookingDataService.users;
+    this.rooms = this.route.snapshot.data['rooms']
+    this.users = this.route.snapshot.data['users']
+
     const id = this.route.snapshot.queryParams['id']
     if (id) {
       this.dataService.getBooking(+id)
