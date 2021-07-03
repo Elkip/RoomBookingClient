@@ -40,10 +40,10 @@ export class CalendarEditComponent implements OnInit {
           })
         )
         .subscribe(next => {
-        this.booking = next;
-        this.dataLoaded = true;
-        this.message = '';
-      });
+          this.booking = next;
+          this.dataLoaded = true;
+          this.message = '';
+        });
     } else {
       this.booking = new Booking();
       this.dataLoaded = true;
@@ -54,9 +54,13 @@ export class CalendarEditComponent implements OnInit {
 
   onSubmit(): void {
     if (this.booking.id == null) {
-      this.dataService.addBooking(this.booking).subscribe(next => this.router.navigate(['']))
+      console.log("Adding Booking")
+      this.dataService.addBooking(this.booking).subscribe(next => this.router.navigate(['']),
+        error => this.message = 'Something went wrong, the record was not saved.')
     } else {
-      this.dataService.saveBooking(this.booking).subscribe(next => this.router.navigate(['']));
+      console.log("Saving booking...")
+      this.dataService.saveBooking(this.booking).subscribe(next => this.router.navigate(['']),
+        error => this.message = 'Something went wrong, the record was not saved.');
     }
   }
 }
