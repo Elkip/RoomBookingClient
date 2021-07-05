@@ -120,6 +120,10 @@ export class DataService {
     return of(null);
   }
 
+  validateUser(name: string, password: string): Observable<string> {
+    return of('ok');
+  }
+
   constructor() {
     this.rooms = new Array<Room>();
     const room1 = new Room();

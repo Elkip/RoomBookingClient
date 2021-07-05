@@ -3,7 +3,7 @@ import {Layout, Room} from "./model/Room";
 import {User} from "./model/User";
 import {Observable, of} from "rxjs";
 import {Booking} from "./model/Booking";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import { environment } from 'src/environments/environment';
 import {map} from "rxjs/operators";
 
@@ -138,6 +138,13 @@ export class DataService {
 
   deleteRoom(id: number): Observable<any> {
     return this.http.delete(environment.restUrl + '/api/rooms/' + id);
+  }
+
+  validateUser(name: string, password: string): Observable<string> {
+    // btoa - binary to ascii
+    const authData = btoa(`${name}:${password}`)
+    const headers = new HttpHeaders().append('Authorization', 'Basic ' + '');
+    return this.http.get<string>(environment.restUrl + '/api/basicAuth/validate', { headers : headers})
   }
 
   constructor(private http: HttpClient) {
