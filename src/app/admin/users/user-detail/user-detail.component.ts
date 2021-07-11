@@ -41,7 +41,7 @@ export class UserDetailComponent implements OnInit {
 
   resetPassword(): void {
     this.message = 'Please wait...';
-    this.dataService.resetPassword(this.user.id).subscribe(
+    this.dataService.resetUserPassword(this.user.id).subscribe(
       next => {
         this.message = 'The password has been reset.';
       }, error => {

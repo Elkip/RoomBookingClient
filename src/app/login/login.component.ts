@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AuthService} from "../auth.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Subscription} from "rxjs";
+import {AuthService} from '../auth.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -16,33 +16,32 @@ export class LoginComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private authService: AuthService,
-              private router: Router,
+              private route: Router,
               private activatedRoute: ActivatedRoute) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.subscription = this.authService.authenticationResultEvent.subscribe(
       result => {
         if (result) {
           const url = this.activatedRoute.snapshot.queryParams['requested'];
-          this.router.navigateByUrl(url);
-        } else {
-          this.message = 'Your username or password has not been recognised - try again';
+          this.route.navigateByUrl(url);
+        }
+        else {
+          this.message = 'Your username or password was not recognised - try again.';
         }
       }
     )
+    this.authService.checkIfAlreadyAuthenticated();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
   onSubmit() {
-    if (this.authService.authenticate(this.name, this.password)) {
-      const url = this.activatedRoute.snapshot.queryParams['requested'];
-      this.router.navigateByUrl(url);
-    } else {
-      this.message = 'Your username and password was not found - try again'
-    }
+    this.authService.authenticate(this.name, this.password);
   }
+
+
 
 }
